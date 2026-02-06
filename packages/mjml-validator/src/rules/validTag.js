@@ -6,6 +6,7 @@ const componentLessTags = [
   'mj-class',
   'mj-selector',
   'mj-html-attribute',
+  'variant',
 ]
 
 export default function validateTag(element, { components }) {

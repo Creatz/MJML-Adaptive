@@ -43,6 +43,7 @@ import handleMjmlConfig, {
 
 const isNode = require('detect-node')
 
+
 class ValidationError extends Error {
   constructor(message, errors) {
     super(message)
@@ -170,6 +171,7 @@ export default function mjml2html(mjml, options = {}) {
     forceOWADesktop: get(mjml, 'attributes.owa', 'mobile') === 'desktop',
     lang: get(mjml, 'attributes.lang') || 'und',
     dir: get(mjml, 'attributes.dir') || 'auto',
+    variantStyleCounter: 0,
   }
 
   const validatorOptions = {

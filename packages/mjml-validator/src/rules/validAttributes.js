@@ -1,6 +1,11 @@
 import ruleError from './ruleError'
 
-const WHITELIST = ['mj-class', 'css-class']
+const WHITELIST = [
+  'mj-class',
+  'css-class',
+  'variant-style-desktop',
+  'variant-style-mobile',
+]
 
 export default function validateAttribute(element, { components }) {
   const { attributes, tagName } = element

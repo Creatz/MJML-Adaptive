@@ -58,6 +58,11 @@ export default function MJMLParser(xml, options = {}, includedIn = []) {
   let cur = null
   let inInclude = !!includedIn.length
   let inEndingTag = 0
+  let inVariantTag = 0
+  let currentEndingTagName = null
+  let currentEndingTagNode = null
+  let currentVariantIndexes = { startIndex: 0, endIndex: 0 }
+  const VARIANT_TAG = 'variant'
   const cssIncludes = []
   const currentEndingTagIndexes = { startIndex: 0, endIndex: 0 }
 
@@ -217,8 +222,21 @@ export default function MJMLParser(xml, options = {}, includedIn = []) {
         const isAnEndingTag = endingTags.indexOf(name) !== -1
 
         if (inEndingTag > 0) {
-          if (isAnEndingTag) inEndingTag += 1
-          return
+          if (
+            name === VARIANT_TAG &&
+            inVariantTag === 0 &&
+            currentEndingTagName !== 'mj-raw'
+          ) {
+            inVariantTag += 1
+            if (currentEndingTagNode) {
+              currentEndingTagNode.hasVariant = true
+            }
+            currentVariantIndexes.startIndex = parser.startIndex
+            currentVariantIndexes.endIndex = parser.endIndex
+          } else {
+            if (isAnEndingTag) inEndingTag += 1
+            return
+          }
         }
 
         if (isAnEndingTag) {
@@ -228,6 +246,7 @@ export default function MJMLParser(xml, options = {}, includedIn = []) {
             // we're entering endingTag
             currentEndingTagIndexes.startIndex = parser.startIndex
             currentEndingTagIndexes.endIndex = parser.endIndex
+            currentEndingTagName = name
           }
         }
 
@@ -270,6 +289,11 @@ export default function MJMLParser(xml, options = {}, includedIn = []) {
         }
 
         cur = newNode
+
+        if (isAnEndingTag && inEndingTag === 1) {
+          currentEndingTagNode = newNode
+        }
+
       },
       onclosetag: (name) => {
         if (endingTags.indexOf(name) !== -1) {
@@ -279,23 +303,47 @@ export default function MJMLParser(xml, options = {}, includedIn = []) {
             // we're getting out of endingTag
             // if self-closing tag we don't get the content
             if (!isSelfClosing(currentEndingTagIndexes, parser)) {
-              const partialVal = xml
-                .substring(
-                  currentEndingTagIndexes.endIndex + 1,
-                  parser.endIndex,
+              if (!currentEndingTagNode || !currentEndingTagNode.hasVariant) {
+                const partialVal = xml
+                  .substring(
+                    currentEndingTagIndexes.endIndex + 1,
+                    parser.endIndex,
+                  )
+                  .trim()
+                const val = partialVal.substring(
+                  0,
+                  partialVal.lastIndexOf(`</${name}`),
                 )
-                .trim()
-              const val = partialVal.substring(
-                0,
-                partialVal.lastIndexOf(`</${name}`),
-              )
 
-              if (val) cur.content = val.trim()
+                if (val) cur.content = val.trim()
+              }
             }
+
+            currentEndingTagName = null
+            currentEndingTagNode = null
           }
         }
 
-        if (inEndingTag > 0) return
+        if (name === VARIANT_TAG && inVariantTag > 0) {
+          inVariantTag -= 1
+          if (!isSelfClosing(currentVariantIndexes, parser)) {
+            const partialVal = xml
+              .substring(
+                currentVariantIndexes.endIndex + 1,
+                parser.endIndex,
+              )
+              .trim()
+            const val = partialVal.substring(
+              0,
+              partialVal.lastIndexOf(`</${name}`),
+            )
+
+            if (val) cur.content = val.trim()
+          }
+
+        }
+
+        if (inEndingTag > 0 && name !== VARIANT_TAG) return
 
         if (inInclude) {
           inInclude = false

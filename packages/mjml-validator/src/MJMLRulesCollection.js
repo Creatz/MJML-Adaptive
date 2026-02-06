@@ -3,6 +3,7 @@ import validChildren from './rules/validChildren'
 import validTag from './rules/validTag'
 import validTypes from './rules/validTypes'
 import errorAttr from './rules/errorAttr'
+import variantPlacement from './rules/variantPlacement'
 
 const MJMLRulesCollection = {
   validAttributes,
@@ -10,6 +11,7 @@ const MJMLRulesCollection = {
   validTag,
   validTypes,
   errorAttr,
+  variantPlacement,
 }
 
 export function registerRule(rule, name) {

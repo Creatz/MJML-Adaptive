@@ -17,6 +17,45 @@ import shorthandParser, { borderParser } from './helpers/shorthandParser'
 import formatAttributes from './helpers/formatAttributes'
 import jsonToXML from './helpers/jsonToXML'
 
+const VARIANT_TAG = 'variant'
+const VARIANT_DEVICES = new Set(['desktop', 'mobile'])
+const VARIANT_STYLE_ID = 'mj-variant'
+const VARIANT_STYLE_ATTRS = ['variant-style-desktop', 'variant-style-mobile']
+
+const ensureVariantStyles = (context) => {
+  if (!context || !context.addHeadStyle) return
+
+  context.addHeadStyle(VARIANT_STYLE_ID, (breakpoint) => `
+    .mj-variant-desktop { display:block !important; }
+    .mj-variant-mobile { display:none !important; mso-hide:all; max-height:0; overflow:hidden; }
+    @media only screen and (max-width:${breakpoint}) {
+      .mj-variant-desktop { display:none !important; max-height:0 !important; overflow:hidden !important; }
+      .mj-variant-mobile { display:block !important; max-height:none !important; overflow:visible !important; }
+    }
+  `)
+}
+
+const getVariantAttributeOverrides = (variant) =>
+  omitBy(variant.attributes || {}, (_v, key) => key === 'device')
+
+const appendCssClass = (value, extra) =>
+  value ? `${value} ${extra}` : extra
+
+const normalizeCssDeclarations = (value) => {
+  if (!value) return ''
+
+  return value
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => (part.includes(':') ? part : `${part}:`))
+    .map((part) =>
+      part.endsWith('!important') ? part : `${part} !important`,
+    )
+    .map((part) => (part.endsWith(';') ? part : `${part};`))
+    .join(' ')
+}
+
 export function initComponent({ initialDatas, name }) {
   const Component = initialDatas.context.components[name]
 
@@ -76,6 +115,45 @@ class Component {
       this.constructor.allowedAttributes,
     )
     this.context = context
+
+    const variantStyleDesktop = this.attributes['variant-style-desktop']
+    const variantStyleMobile = this.attributes['variant-style-mobile']
+
+    if (
+      (variantStyleDesktop || variantStyleMobile) &&
+      this.context &&
+      this.context.addHeadStyle &&
+      this.context.globalData
+    ) {
+      const classId =
+        (this.context.globalData.variantStyleCounter += 1) // eslint-disable-line no-plusplus
+      const className = `mj-variant-style-${classId}`
+
+      const desktopCss = normalizeCssDeclarations(variantStyleDesktop)
+      const mobileCss = normalizeCssDeclarations(variantStyleMobile)
+
+      this.context.addHeadStyle(`${VARIANT_STYLE_ID}-${classId}`, (breakpoint) =>
+        [
+          desktopCss ? `.${className} { ${desktopCss} }` : '',
+          mobileCss
+            ? `@media only screen and (max-width:${breakpoint}) { .${className} { ${mobileCss} } }`
+            : '',
+        ]
+          .filter(Boolean)
+          .join('\n'),
+      )
+
+      const mergedCssClass = appendCssClass(
+        this.attributes['css-class'],
+        className,
+      )
+
+      this.attributes['css-class'] = mergedCssClass
+      this.props.rawAttrs = {
+        ...this.props.rawAttrs,
+        'css-class': mergedCssClass,
+      }
+    }
 
     return this
   }
@@ -229,14 +307,81 @@ export class BodyComponent extends Component {
     let output = ''
     let index = 0
 
-    forEach(children, (children) => {
+    forEach(children, (child) => {
+      if (child.tagName === VARIANT_TAG) {
+        const device = get(child, 'attributes.device')
+
+        if (!VARIANT_DEVICES.has(device)) {
+          index++ // eslint-disable-line no-plusplus
+          return
+        }
+
+        ensureVariantStyles(this.context)
+
+        const variantOverrides = getVariantAttributeOverrides(child)
+        const innerChildren = child.children || []
+
+        const rendered = innerChildren
+          .map((innerChild) => {
+            const variantOverridesRaw = getVariantAttributeOverrides(child)
+            const variantCssClass = `mj-variant mj-variant-${device}`
+            const mergedCssClass = appendCssClass(
+              innerChild.attributes && innerChild.attributes['css-class'],
+              variantCssClass,
+            )
+
+            const component = initComponent({
+              name: innerChild.tagName,
+              initialDatas: {
+                ...innerChild,
+                attributes: {
+                  ...attributes,
+                  ...innerChild.attributes,
+                  ...variantOverrides,
+                  'css-class': mergedCssClass,
+                },
+                rawAttrs: {
+                  ...(innerChild.rawAttrs || {}),
+                  ...variantOverridesRaw,
+                  'css-class': mergedCssClass,
+                },
+                context: this.getChildContext(),
+                props: {
+                  ...props,
+                  first: index === 0,
+                  index,
+                  last: index + 1 === sibling,
+                  sibling,
+                  nonRawSiblings,
+                },
+              },
+            })
+
+            if (component !== null) {
+              return renderer(component)
+            }
+
+            return ''
+          })
+          .join('')
+
+        if (rendered) {
+          output +=
+            device === 'mobile'
+              ? `<!--[if !mso]><!-->${rendered}<!--<![endif]-->`
+              : rendered
+        }
+        index++ // eslint-disable-line no-plusplus
+        return
+      }
+
       const component = initComponent({
-        name: children.tagName,
+        name: child.tagName,
         initialDatas: {
-          ...children,
+          ...child,
           attributes: {
             ...attributes,
-            ...children.attributes,
+            ...child.attributes,
           },
           context: this.getChildContext(),
           props: {

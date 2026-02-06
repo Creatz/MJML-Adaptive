@@ -43,6 +43,41 @@ If you're looking for MJML 3.3.X check [this branch](https://github.com/mjmlio/m
   </a>
 </p>
 
+# MJML Adaptative: Variants (v0.1)
+
+MJML Adaptative introduces an optional `<variant>` mechanism to express intentional desktop/mobile differences without manual HTML post-editing. Existing MJML syntax continues to work unchanged.
+
+```mjml
+<variant device="desktop">
+  <mj-text>Desktop text version</mj-text>
+</variant>
+<variant device="mobile">
+  <mj-text>Mobile text version</mj-text>
+</variant>
+```
+
+Notes:
+- If no `<variant>` is present, rendering is identical to MJML today.
+- `<variant>` must wrap exactly one MJML component.
+- Do not place `<variant>` inside components like `mj-text` or `mj-image`.
+- Variants support attribute overrides on the wrapped component (e.g., `color`, `font-size`).
+
+Variant styles (mobile/desktop only):
+
+```mjml
+<mj-text
+  font-size="20px"
+  color="#F45E43"
+  font-family="helvetica"
+  variant-style-mobile="color:#002c5f;font-size:10px;line-height:1.2"
+>
+  Hello World
+</mj-text>
+```
+
+The `variant-style-desktop` and `variant-style-mobile` attributes inject CSS classes
+with `!important` rules to override inline styles at the desktop or mobile breakpoint.
+
 
 # Installation
 
