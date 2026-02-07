@@ -11,12 +11,20 @@ export function buildStyleFromComponents(
     return ''
   }
 
+  const minifyCss = (css) =>
+    css
+      .replace(/\s+/g, ' ')
+      .replace(/\s*([:;{},])\s*/g, '$1')
+      .replace(/;\}/g, '}')
+      .trim()
+
   return `
-    <style type="text/css">${[...componentsHeadStyles, ...headStyles].reduce(
-      (result, styleFunction) => `${result}\n${styleFunction(breakpoint)}`,
-      '',
-    )}
-    </style>`
+    <style type="text/css">${minifyCss(
+      [...componentsHeadStyles, ...headStyles].reduce(
+        (result, styleFunction) => `${result}\n${styleFunction(breakpoint)}`,
+        '',
+      ),
+    )}</style>`
 }
 
 export function buildStyleFromTags(breakpoint, styles) {
@@ -24,11 +32,18 @@ export function buildStyleFromTags(breakpoint, styles) {
     return ''
   }
 
-  return ` 
-    <style type="text/css">${styles.reduce(
+  const minifyCss = (css) =>
+    css
+      .replace(/\s+/g, ' ')
+      .replace(/\s*([:;{},])\s*/g, '$1')
+      .replace(/;\}/g, '}')
+      .trim()
+
+  return `<style type="text/css">${minifyCss(
+    styles.reduce(
       (result, style) =>
         `${result}\n${isFunction(style) ? style(breakpoint) : style}`,
       '',
-    )}
-    </style>`
+    ),
+  )}</style>`
 }

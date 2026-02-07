@@ -242,6 +242,23 @@ export class BodyComponent extends Component {
       default: identity,
     }
 
+    const cssClass = this.getAttribute && this.getAttribute('css-class')
+    if (cssClass && attributes && attributes.class) {
+      const classList = new Set(
+        attributes.class
+          .split(' ')
+          .map((c) => c.trim())
+          .filter(Boolean),
+      )
+      cssClass
+        .split(' ')
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .forEach((c) => classList.add(c))
+      // eslint-disable-next-line no-param-reassign
+      attributes = { ...attributes, class: Array.from(classList).join(' ') }
+    }
+
     return reduce(
       omitBy(attributes, isNil),
       (output, v, name) => {

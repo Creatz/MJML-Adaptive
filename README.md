@@ -1,6 +1,6 @@
 # MJML 4
 
-If you're looking for MJML 3.3.X check [this branch](https://github.com/mjmlio/mjml/tree/3.3.x)
+Si vous cherchez MJML 3.3.X, consultez [cette branche](https://github.com/mjmlio/mjml/tree/3.3.x).
 
 <p style="text-align: center;" >
   <a href="https://mjml.io" target="_blank">
@@ -20,22 +20,22 @@ If you're looking for MJML 3.3.X check [this branch](https://github.com/mjmlio/m
 
 
 <p style="text-align: center;" >
-  | <b><a href="#translated-documentation">Translated documentation</a></b>
+  | <b><a href="#documentation-traduite">Documentation traduite</a></b>
   | <b><a href="#introduction">Introduction</a></b>
   | <b><a href="#installation">Installation</a></b>
-  | <b><a href="#usage">Usage</a></b> |
+  | <b><a href="#utilisation">Utilisation</a></b> |
 </p>
 
 ---
-# Translated documentation
+# Documentation traduite
 
-| Language | Link for documentation |
+| Langue | Lien vers la documentation |
 | :-: | :-: |
-| 日本語 | [日本語ドキュメント](https://github.com/mjmlio/mjml/blob/master/readme-ja.md) |
+| 日本語 | [Documentation japonaise](https://github.com/mjmlio/mjml/blob/master/readme-ja.md) |
 
 # Introduction
 
-`MJML` is a markup language created by [Mailjet](https://www.mailjet.com/) and designed to reduce the pain of coding a responsive email. Its semantic syntax makes the language easy and straightforward while its rich standard components library shortens your development time and lightens your email codebase. MJML’s open-source engine takes care of translating the `MJML` you wrote into responsive HTML.
+`MJML` est un langage de balisage créé par [Mailjet](https://www.mailjet.com/) et conçu pour réduire la douleur du code responsive en email. Sa syntaxe sémantique rend le langage simple et direct, et sa riche bibliothèque de composants standards réduit votre temps de développement tout en allégeant votre code email. Le moteur open‑source MJML se charge de traduire le `MJML` que vous avez écrit en HTML responsive.
 
 <p style="text-align: center;" >
   <a href="https://mjml.io" target="_blank">
@@ -45,7 +45,7 @@ If you're looking for MJML 3.3.X check [this branch](https://github.com/mjmlio/m
 
 # MJML Adaptative: Variants (v0.1)
 
-MJML Adaptative introduces an optional `<variant>` mechanism to express intentional desktop/mobile differences without manual HTML post-editing. Existing MJML syntax continues to work unchanged.
+MJML Adaptative introduit un mécanisme optionnel `<variant>` pour exprimer des différences intentionnelles desktop/mobile sans post‑édition manuelle de HTML. La syntaxe MJML existante continue de fonctionner sans changement.
 
 ```mjml
 <variant device="desktop">
@@ -57,12 +57,12 @@ MJML Adaptative introduces an optional `<variant>` mechanism to express intentio
 ```
 
 Notes:
-- If no `<variant>` is present, rendering is identical to MJML today.
-- `<variant>` must wrap exactly one MJML component.
-- Do not place `<variant>` inside components like `mj-text` or `mj-image`.
-- Variants support attribute overrides on the wrapped component (e.g., `color`, `font-size`).
+- Si aucun `<variant>` n'est présent, le rendu est identique à MJML aujourd'hui.
+- `<variant>` doit encapsuler exactement un composant MJML.
+- Ne placez pas `<variant>` à l'intérieur de composants comme `mj-text` ou `mj-image`.
+- Les variants supportent des surcharges d'attributs sur le composant encapsulé (ex : `color`, `font-size`).
 
-Variant styles (mobile/desktop only):
+Styles de variants (mobile/desktop uniquement) :
 
 ```mjml
 <mj-text
@@ -75,21 +75,51 @@ Variant styles (mobile/desktop only):
 </mj-text>
 ```
 
-The `variant-style-desktop` and `variant-style-mobile` attributes inject CSS classes
-with `!important` rules to override inline styles at the desktop or mobile breakpoint.
+Les attributs `variant-style-desktop` et `variant-style-mobile` injectent des classes CSS avec des règles `!important` pour surcharger les styles inline au breakpoint desktop ou mobile.
 
+# MJML Adaptative: Options de sortie
+
+Cette fork ajoute deux comportements de sortie activés par défaut :
+
+- **CSS minifié dans `<head>`** : toutes les balises `<style>` sont minifiées après le rendu, tout en conservant un HTML formaté (beautified) pour la lisibilité.
+- **Mode AMP** : ajoutez `amp="true"` sur `<mj-head>` pour injecter un tag de tracking juste après `<body>` et ajouter un attribut `alias` aléatoire sur chaque lien.
+
+Exemple :
+
+```mjml
+<mjml>
+  <mj-head amp="true">
+    <mj-attributes>
+      <mj-all font-family="helvetica" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text>
+          <a href="https://example.com">Hello</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+```
+
+Comportement HTML résultant :
+- `<custom name="opencounter" type="tracking"/>` est inséré juste après `<body>`.
+- Chaque `<a>` reçoit un attribut `alias="XXXXXX"` (4–8 caractères aléatoires).
 
 # Installation
 
-You can install `MJML` with `NPM` to use it with NodeJS or the Command Line Interface. If you're not sure what those are, head over to <a href="#usage">Usage</a> for other ways to use MJML.
+Vous pouvez installer `MJML` avec `NPM` pour l'utiliser avec NodeJS ou en ligne de commande (CLI). Si vous ne savez pas ce que c'est, consultez la section <a href="#utilisation">Utilisation</a>.
 
 ```bash
 npm install mjml
 ```
 
-# Development
+# Développement
 
-To work on MJML, make changes and create merge requests, download and install [yarn](https://yarnpkg.com/lang/en/docs/install/) for easy development.
+Pour travailler sur MJML, faites des modifications et créez des merge requests, téléchargez et installez [yarn](https://yarnpkg.com/lang/en/docs/install/) pour un développement simple.
 
 ```bash
 git clone https://github.com/mjmlio/mjml.git && cd mjml
@@ -97,56 +127,56 @@ yarn
 yarn build
 ```
 
-You can also run `yarn build:watch` to rebuild the package as you code.
+Vous pouvez aussi lancer `yarn build:watch` pour recompiler les packages pendant que vous codez.
 
-# Usage
+# Utilisation
 
-## Online
+## En ligne
 
-Don't want to install anything? Use the free online editor!
+Pas envie d'installer quoi que ce soit ? Utilisez l'éditeur en ligne gratuit !
 
 <p style="text-align: center;" >
   <a href="https://mjml.io/try-it-live" target="_blank"><img src="https://cloud.githubusercontent.com/assets/6558790/12195421/58a40618-b5f7-11e5-9ed3-80463874ab14.png" alt="try it live" width="75%"></a>
 </p>
 <br>
 
-## Applications and plugins
+## Applications et plugins
 
-MJML comes with an ecosystem of tools and plugins, check out:
-- The [MJML App](https://mjmlio.github.io/mjml-app/) (MJML is included)
-- [Visual Studio Code plugin](https://github.com/mjmlio/vscode-mjml) (MJML is included)
-- [Sublime Text plugin](https://packagecontrol.io/packages/MJML-syntax) (MJML needs to be installed separately)
+MJML dispose d'un écosystème d'outils et de plugins, découvrez :
+- L'[application MJML](https://mjmlio.github.io/mjml-app/) (MJML est inclus)
+- Le [plugin Visual Studio Code](https://github.com/mjmlio/vscode-mjml) (MJML est inclus)
+- Le [plugin Sublime Text](https://packagecontrol.io/packages/MJML-syntax) (MJML doit être installé séparément)
 
-For more tools, check the [Community](https://mjml.io/community) page.
+Pour plus d'outils, consultez la page [Community](https://mjml.io/community).
 
-## Command line interface
+## Interface en ligne de commande (CLI)
 
-> Compiles the file and outputs the HTML generated in `output.html`
+> Compile le fichier et écrit le HTML généré dans `output.html`
 
 ```bash
 mjml input.mjml -o output.html
 ```
 
-You can pass optional `arguments` to the CLI and combine them.
+Vous pouvez passer des `arguments` optionnels au CLI et les combiner.
 
-argument | description | default value
+argument | description | valeur par défaut
 ---------|--------|--------------
-`mjml -m [input]` | Migrates a v3 MJML file to the v4 syntax | NA
-`mjml [input] -o [output]` | Writes the output to [output] | NA
-`mjml [input] -s` | Writes the output to `stdout` | NA
-`mjml -w [input]` | Watches the changes made to `[input]` (file or folder) | NA
-`mjml [input] --config.beautify` | Beautifies the output (`true` or `false`) | true
-`mjml [input] --config.minify` | Minifies the output (`true` or `false`) | false
+`mjml -m [input]` | Migre un fichier MJML v3 vers la syntaxe v4 | NA
+`mjml [input] -o [output]` | Écrit la sortie dans [output] | NA
+`mjml [input] -s` | Écrit la sortie sur `stdout` | NA
+`mjml -w [input]` | Surveille les changements sur `[input]` (fichier ou dossier) | NA
+`mjml [input] --config.beautify` | Beautifie la sortie (`true` ou `false`) | true
+`mjml [input] --config.minify` | Minifie la sortie (`true` ou `false`) | false
 
-See [mjml-cli documentation](https://github.com/mjmlio/mjml/blob/master/packages/mjml-cli/README.md) for more information about config options.
+Voir la documentation de [mjml-cli](https://github.com/mjmlio/mjml/blob/master/packages/mjml-cli/README.md) pour plus d'informations sur les options de configuration.
 
-## Inside Node.js
+## Dans Node.js
 
 ```javascript
 import mjml2html from 'mjml'
 
 /*
-  Compile an mjml string
+  Compiler une chaîne MJML
 */
 const htmlOutput = mjml2html(`
   <mjml>
@@ -154,86 +184,19 @@ const htmlOutput = mjml2html(`
       <mj-section>
         <mj-column>
           <mj-text>
-            Hello World!
+            Hello World
           </mj-text>
         </mj-column>
       </mj-section>
     </mj-body>
   </mjml>
-`, options)
-
-
-/*
-  Print the responsive HTML generated and MJML errors if any
-*/
-console.log(htmlOutput)
+`)
 ```
 
-You can pass optional `options` as an object to the `mjml2html` function:
+# Contribuer
 
-option   | unit   | description  | default value
--------------|--------|--------------|---------------
-fonts  | object | Default fonts imported in the HTML rendered by MJML | See in [index.js](https://github.com/mjmlio/mjml/blob/master/packages/mjml-core/src/index.js#L100-L108)
-keepComments | boolean | Option to keep comments in the HTML output | true
-ignoreIncludes | boolean | Option to ignore mj-includes | false
-beautify | boolean | Option to beautify the HTML output | false
-minify | boolean | Option to minify the HTML output | false
-validationLevel | string | Available values for the [validator](https://github.com/mjmlio/mjml/tree/master/packages/mjml-validator#validating-mjml): 'strict', 'soft', 'skip'  | 'soft'
-filePath | string | Path of file, used for relative paths in mj-includes | '.'
-preprocessors | array of functions | Preprocessors applied to the xml before parsing. Input must be xml, not json. Functions must be (xml: string) => string | []
-juicePreserveTags | Preserve some tags when inlining css, see [mjml-cli documentation](https://github.com/mjmlio/mjml/blob/master/packages/mjml-cli/README.md) for more info | NA
-minifyOptions | Options for html minifier, see [mjml-cli documentation](https://github.com/mjmlio/mjml/blob/master/packages/mjml-cli/README.md) for more info | NA
-mjmlConfigPath | string | The path or directory of the `.mjmlconfig` file (for custom components use) | `process.cwd()`
-useMjmlConfigOptions | Allows to use the `options` attribute from `.mjmlconfig` file | false
+Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour les guidelines de contribution.
 
-## Client-side (in browser)
+# Licence
 
-```javascript
-var mjml2html = require('mjml-browser')
-
-/*
-  Compile a mjml string
-*/
-var htmlOutput = mjml2html(`
-  <mjml>
-    <mj-body>
-      <mj-section>
-        <mj-column>
-          <mj-text>
-            Hello World!
-          </mj-text>
-        </mj-column>
-      </mj-section>
-    </mj-body>
-  </mjml>
-`, options)
-
-
-/*
-  Print the responsive HTML generated and MJML errors if any
-*/
-console.log(htmlOutput)
-```
-
-## API
-
-A free-to-use MJML API is available to make it easy to integrate MJML in your application. Head over [here](https://mjml.io/api) to learn more about the API.
-
-# MJML Slack
-
-MJML wouldn't be as cool without its amazing community. Head over the [Community Slack](https://join.slack.com/t/mjml/shared_invite/zt-gqmwfwmr-kPBnfuuB7wof5httaTcXxg) to meet fellow MJML'ers.
-
-# Contributors
-
-- [Maxime](https://github.com/iRyusa)
-- [Nicolas](https://github.com/ngarnier)
-- [Cedric](https://github.com/kmcb777)
-- [Loeck](https://github.com/lohek)
-- [Robin](https://github.com/robink)
-- [Guillaume](https://github.com/GuillaumeBadi)
-- [Meriadec](https://github.com/meriadec)
-- [Arnaud](https://github.com/arnaudbreton)
-- [HTeuMeuLeu](https://github.com/hteumeuleu)
-- [Emmanuel Payet](https://github.com/epayet)
-- [Matthieu](https://github.com/swibge)
-- [Rogier](https://github.com/rogierslag)
+Consultez [LICENSE.md](LICENSE.md).

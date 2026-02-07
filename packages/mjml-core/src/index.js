@@ -172,6 +172,7 @@ export default function mjml2html(mjml, options = {}) {
     lang: get(mjml, 'attributes.lang') || 'und',
     dir: get(mjml, 'attributes.dir') || 'auto',
     variantStyleCounter: 0,
+    amp: false,
   }
 
   const validatorOptions = {
@@ -206,6 +207,8 @@ export default function mjml2html(mjml, options = {}) {
   const mjBody = find(mjml.children, { tagName: 'mj-body' })
   const mjHead = find(mjml.children, { tagName: 'mj-head' })
   const mjOutsideRaws = filter(mjml.children, { tagName: 'mj-raw' })
+  const ampAttr = get(mjHead, 'attributes.amp')
+  globalData.amp = ampAttr === true || ampAttr === 'true'
 
   const processing = (node, context, parseMJML = identity) => {
     if (!node) {
@@ -358,7 +361,7 @@ export default function mjml2html(mjml, options = {}) {
     }
   }
 
-  if (!isEmpty(globalData.htmlAttributes)) {
+  if (!isEmpty(globalData.htmlAttributes) || globalData.amp) {
     const $ = load(content, {
       xmlMode: true, // otherwise it may move contents that aren't in any tag
       decodeEntities: false, // won't escape special characters
@@ -371,6 +374,26 @@ export default function mjml2html(mjml, options = {}) {
         })
       })
     })
+
+    if (globalData.amp) {
+      const randomAlias = () => {
+        const chars =
+          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        const length = 4 + Math.floor(Math.random() * 5)
+        let result = ''
+        for (let i = 0; i < length; i += 1) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length))
+        }
+        return result
+      }
+
+      $('a[href]').each(function addAlias() {
+        const alias = $(this).attr('alias')
+        if (!alias) {
+          $(this).attr('alias', randomAlias())
+        }
+      })
+    }
 
     content = $.root().html()
   }
@@ -426,6 +449,23 @@ export default function mjml2html(mjml, options = {}) {
       ...minifyOptions,
     })
   }
+
+  const minifyCssInStyleTags = (html) => {
+    const minifyCss = (css) =>
+      css
+        .replace(/\s+/g, ' ')
+        .replace(/\s*([:;{},])\s*/g, '$1')
+        .replace(/;\}/g, '}')
+        .trim()
+
+    return html.replace(
+      /<style\b([^>]*)>([\s\S]*?)<\/style>/gi,
+      (_match, attrs, css) =>
+        `<style${attrs}>${minifyCss(css)}</style>`,
+    )
+  }
+
+  content = minifyCssInStyleTags(content)
 
   return {
     html: content,

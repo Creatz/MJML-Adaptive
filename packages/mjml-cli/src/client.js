@@ -252,6 +252,20 @@ export default async () => {
               ...config.minifyOptions,
             })
           }
+
+          if (compiled && compiled.html) {
+            compiled.html = compiled.html.replace(
+              /<style\b([^>]*)>([\s\S]*?)<\/style>/gi,
+              (_match, attrs, css) => {
+                const minified = css
+                  .replace(/\s+/g, ' ')
+                  .replace(/\s*([:;{},])\s*/g, '$1')
+                  .replace(/;\}/g, '}')
+                  .trim()
+                return `<style${attrs}>${minified}</style>`
+              },
+            )
+          }
         }
       }
 
