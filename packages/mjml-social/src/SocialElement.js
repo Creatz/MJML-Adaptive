@@ -141,7 +141,6 @@ export default class MjSocialElement extends BodyComponent {
     'line-height': '1',
     padding: '4px',
     'text-padding': '4px 4px 4px 0',
-    target: '_blank',
     'text-decoration': 'none',
     'vertical-align': 'middle',
   }

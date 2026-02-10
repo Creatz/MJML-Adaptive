@@ -44,7 +44,6 @@ export default class MjImage extends BodyComponent {
     border: '0',
     height: 'auto',
     padding: '10px 25px',
-    target: '_blank',
     'font-size': '13px',
   }
 

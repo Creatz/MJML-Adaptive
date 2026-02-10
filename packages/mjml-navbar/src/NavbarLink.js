@@ -35,7 +35,6 @@ export default class MjNavbarLink extends BodyComponent {
     'font-weight': 'normal',
     'line-height': '22px',
     padding: '15px 10px',
-    target: '_blank',
     'text-decoration': 'none',
     'text-transform': 'uppercase',
   }

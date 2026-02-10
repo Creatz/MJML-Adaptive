@@ -55,7 +55,6 @@ export default class MjButton extends BodyComponent {
     'inner-padding': '10px 25px',
     'line-height': '120%',
     padding: '10px 25px',
-    target: '_blank',
     'text-decoration': 'none',
     'text-transform': 'none',
     'vertical-align': 'middle',

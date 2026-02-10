@@ -26,8 +26,10 @@ export default function skeleton(options) {
     amp,
   } = options
 
+  const dirAttr = dir ? ` dir="${dir}"` : ''
+
   return `${beforeDoctype ? `${beforeDoctype}\n` : ''}<!doctype html>
-<html lang="${lang}" dir="${dir}" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html${dirAttr} xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
   <head>
     <title>${title}</title>
     <!--[if !mso]><!-->

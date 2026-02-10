@@ -20,7 +20,6 @@ export default class MjCarouselImage extends BodyComponent {
 
   static defaultAttributes = {
     alt: '',
-    target: '_blank',
   }
 
   getStyles() {
@@ -149,7 +148,7 @@ export default class MjCarouselImage extends BodyComponent {
       >
         ${
           href
-            ? `<a ${this.htmlAttributes({ href, rel, target: '_blank' })}>${image}</a>`
+            ? `<a ${this.htmlAttributes({ href, rel, target: this.getAttribute('target') })}>${image}</a>`
             : image
         }
       </div>
