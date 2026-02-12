@@ -26,11 +26,11 @@ const ensureVariantStyles = (context) => {
   if (!context || !context.addHeadStyle) return
 
   context.addHeadStyle(VARIANT_STYLE_ID, (breakpoint) => `
-    .mj-variant-desktop { display:block !important; }
-    .mj-variant-mobile { display:none !important; mso-hide:all; max-height:0; overflow:hidden; }
+    .mj-variant-desktop { display:block!important; }
+    .mj-variant-mobile { display:none!important; mso-hide:all; max-height:0; overflow:hidden; }
     @media only screen and (max-width:${breakpoint}) {
-      .mj-variant-desktop { display:none !important; max-height:0 !important; overflow:hidden !important; }
-      .mj-variant-mobile { display:block !important; max-height:none !important; overflow:visible !important; }
+      .mj-variant-desktop { display:none!important; max-height:0!important; overflow:hidden!important; }
+      .mj-variant-mobile { display:block!important; max-height:none!important; overflow:visible!important; }
     }
   `)
 }
@@ -41,6 +41,9 @@ const getVariantAttributeOverrides = (variant) =>
 const appendCssClass = (value, extra) =>
   value ? `${value} ${extra}` : extra
 
+const stripMsoConditionalBlocks = (content = '') =>
+  content.replace(/<!--\[if\s+[^\]]*mso[^\]]*]>[\s\S]*?<!\[endif]-->/gim, '')
+
 const normalizeCssDeclarations = (value) => {
   if (!value) return ''
 
@@ -50,7 +53,7 @@ const normalizeCssDeclarations = (value) => {
     .filter(Boolean)
     .map((part) => (part.includes(':') ? part : `${part}:`))
     .map((part) =>
-      part.endsWith('!important') ? part : `${part} !important`,
+      part.endsWith('!important') ? part : `${part}!important`,
     )
     .map((part) => (part.endsWith(';') ? part : `${part};`))
     .join(' ')
@@ -383,10 +386,14 @@ export class BodyComponent extends Component {
           .join('')
 
         if (rendered) {
+          const safeRendered =
+            device === 'mobile'
+              ? stripMsoConditionalBlocks(rendered)
+              : rendered
           output +=
             device === 'mobile'
-              ? `<!--[if !mso]><!-->${rendered}<!--<![endif]-->`
-              : rendered
+              ? `<!--[if !mso]><!-->${safeRendered}<!--<![endif]-->`
+              : safeRendered
         }
         index++ // eslint-disable-line no-plusplus
         return

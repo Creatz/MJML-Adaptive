@@ -24,7 +24,7 @@ export default class MjAccordion extends BodyComponent {
 
   static defaultAttributes = {
     border: '2px solid black',
-    'font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'font-family': 'Arial, Helvetica, sans-serif',
     'icon-align': 'middle',
     'icon-wrapped-url': 'https://i.imgur.com/bIXv1bk.png',
     'icon-wrapped-alt': '+',

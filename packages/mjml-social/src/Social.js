@@ -34,7 +34,7 @@ export default class MjSocial extends BodyComponent {
     align: 'center',
     'border-radius': '3px',
     color: '#333333',
-    'font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'font-family': 'Arial, Helvetica, sans-serif',
     'font-size': '13px',
     'icon-size': '20px',
     'inner-padding': null,

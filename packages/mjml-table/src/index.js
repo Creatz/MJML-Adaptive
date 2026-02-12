@@ -36,7 +36,7 @@ export default class MjTable extends BodyComponent {
     cellpadding: '0',
     cellspacing: '0',
     color: '#000000',
-    'font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'font-family': 'Arial, Helvetica, sans-serif',
     'font-size': '13px',
     'line-height': '22px',
     padding: '10px 25px',

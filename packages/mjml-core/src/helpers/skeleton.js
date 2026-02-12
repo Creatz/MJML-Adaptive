@@ -50,7 +50,7 @@ export default function skeleton(options) {
     <![endif]-->
     <!--[if lte mso 11]>
     <style type="text/css">
-      .mj-outlook-group-fix { width:100% !important; }
+      .mj-outlook-group-fix { width:100%!important; }
     </style>
     <![endif]-->
     ${buildFontsTags(content, inlineStyle, fonts)}

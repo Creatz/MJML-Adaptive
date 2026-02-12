@@ -30,7 +30,7 @@ export default class MjNavbarLink extends BodyComponent {
 
   static defaultAttributes = {
     color: '#000000',
-    'font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'font-family': 'Arial, Helvetica, sans-serif',
     'font-size': '13px',
     'font-weight': 'normal',
     'line-height': '22px',

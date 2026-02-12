@@ -286,7 +286,7 @@ export default function mjml2html(mjml, options = {}) {
     globalData,
     addMediaQuery(className, { parsedWidth, unit }) {
       globalData.mediaQueries[className] =
-        `{ width:${parsedWidth}${unit} !important; max-width: ${parsedWidth}${unit}; }`
+        `{ width:${parsedWidth}${unit}!important; max-width:${parsedWidth}${unit}; }`
     },
     addHeadStyle(identifier, headStyle) {
       globalData.headStyle[identifier] = headStyle
@@ -460,6 +460,7 @@ export default function mjml2html(mjml, options = {}) {
   }
 
   content = minifyCssInStyleTags(content)
+  content = content.replace(/\s+!important/g, '!important')
 
   return {
     html: content,

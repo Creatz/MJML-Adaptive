@@ -32,7 +32,7 @@ export default class MjText extends BodyComponent {
   static defaultAttributes = {
     align: 'left',
     color: '#000000',
-    'font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'font-family': 'Arial, Helvetica, sans-serif',
     'font-size': '13px',
     'line-height': '1',
     padding: '10px 25px',

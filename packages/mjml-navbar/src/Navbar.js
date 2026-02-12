@@ -42,7 +42,7 @@ export default class MjNavbar extends BodyComponent {
     'ico-close': '&#8855;',
     'ico-color': '#000000',
     'ico-font-size': '30px',
-    'ico-font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'ico-font-family': 'Arial, Helvetica, sans-serif',
     'ico-text-transform': 'uppercase',
     'ico-padding': '10px',
     'ico-text-decoration': 'none',

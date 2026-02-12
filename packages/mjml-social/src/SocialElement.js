@@ -136,7 +136,7 @@ export default class MjSocialElement extends BodyComponent {
     'icon-position': 'left',
     color: '#000',
     'border-radius': '3px',
-    'font-family': 'Ubuntu, Helvetica, Arial, sans-serif',
+    'font-family': 'Arial, Helvetica, sans-serif',
     'font-size': '13px',
     'line-height': '1',
     padding: '4px',

@@ -265,6 +265,7 @@ export default async () => {
                 return `<style${attrs}>${minified}</style>`
               },
             )
+            compiled.html = compiled.html.replace(/\s+!important/g, '!important')
           }
         }
       }
